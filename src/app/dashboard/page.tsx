@@ -140,12 +140,40 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   
-                  <div style={{ display: "flex", gap: 12, marginTop: 24 }}>
-                    <button className="btn btn--outline" style={{ flex: 1, padding: "8px 0", fontSize: "0.85rem" }}>
-                      <Settings size={14} /> Pengaturan
+                  <div style={{ display: "flex", gap: 12, marginTop: 24, flexWrap: "wrap" }}>
+                    <button 
+                      className="btn btn--outline" 
+                      style={{ flex: 1, padding: "8px 0", fontSize: "0.85rem" }}
+                      onClick={async () => {
+                        const btn = document.getElementById(`scrape-btn-${bot.id}`);
+                        if (btn) btn.innerText = "Membaca...";
+                        try {
+                          const res = await fetch("/api/scrape", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ url: bot.websiteUrl, chatbotId: bot.id })
+                          });
+                          const data = await res.json();
+                          alert(data.message || data.error);
+                        } catch (e) {
+                          alert("Gagal melatih AI");
+                        }
+                        if (btn) btn.innerText = "Latih AI dari URL";
+                      }}
+                      id={`scrape-btn-${bot.id}`}
+                    >
+                      <Settings size={14} style={{ display: 'inline', marginRight: 4 }} /> Latih AI dari URL
                     </button>
-                    <button className="btn btn--primary" style={{ flex: 1, padding: "8px 0", fontSize: "0.85rem" }}>
-                      Widget Code
+                    <button 
+                      className="btn btn--primary" 
+                      style={{ flex: 1, padding: "8px 0", fontSize: "0.85rem" }}
+                      onClick={() => {
+                        const snippet = `<script src="${window.location.origin}/widget.js" data-bot-id="${bot.id}"></script>`;
+                        navigator.clipboard.writeText(snippet);
+                        alert("Kode widget berhasil di-copy! Tempel di dalam tag <body> SmartKos Anda.");
+                      }}
+                    >
+                      Copy Widget Code
                     </button>
                   </div>
                 </div>
