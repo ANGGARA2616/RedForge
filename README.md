@@ -1,3 +1,18 @@
+# RedForge - AI Chatbot SaaS
+
+## Pengujian Aspek Kualitas (Matriks New Product, New Market)
+Sistem SaaS RedForge dievaluasi berdasarkan strategi diversifikasi (*New Product, New Market*) untuk memastikan platform yang sama sekali baru ini dapat beradaptasi di pasar yang juga baru, dengan performa yang stabil dan aman bagi klien.
+
+| Aspek Kualitas (ISO 25010) | Parameter Pengujian | Metode Pengujian | Status / Hasil |
+| -------------------------- | ------------------- | ---------------- | -------------- |
+| **Portability** | Widget dapat diintegrasikan lintas *platform* (Next.js, WordPress, HTML) tanpa error. | Uji injeksi script tag `<script>` CORS lintas domain (contoh: SmartKos). | ✅ Lulus Uji |
+| **Usability** | *Client* (pemilik web) dapat melatih AI hanya dengan sekali klik tanpa *coding* sama sekali. | Simulasi URL Scraping otomatis via tombol "Latih AI dari URL" di *Dashboard*. | ✅ Lulus Uji |
+| **Reliability** | AI merespons *chat* dengan stabil dan hanya menggunakan data milik klien. | Pengujian tingkat halusinasi RAG menggunakan OpenAI GPT-5.4-mini (Temperature 0.2). | ✅ Lulus Uji |
+| **Security** | Isolasi data aman antar *Tenant* (Chatbot A tidak bisa membaca atau bocor ke data Chatbot B). | Injeksi *Chatbot ID* unik ganda pada *Similarity Search* di `pgvector` Supabase. | ✅ Lulus Uji |
+| **Scalability** | Sistem mampu menangani beban ekstraksi *chunking* teks dalam jumlah besar secara real-time. | Scraping massal halaman HTML kompleks menggunakan `cheerio` secara asinkron. | ✅ Lulus Uji |
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
