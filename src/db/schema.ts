@@ -4,6 +4,8 @@ import {
   timestamp,
   boolean,
   integer,
+  vector,
+  index,
 } from "drizzle-orm/pg-core";
 
 // ===== BETTER AUTH TABLES =====
@@ -109,3 +111,16 @@ export const message = pgTable("message", {
   content: text("content").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const knowledgeChunk = pgTable("knowledge_chunk", {
+  id: text("id").primaryKey(),
+  chatbotId: text("chatbot_id")
+    .notNull()
+    .references(() => chatbot.id),
+  content: text("content").notNull(),
+  embedding: vector("embedding", { dimensions: 1536 }), // OpenAI text-embedding-3-small
+  url: text("url"), // Source URL
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => ({
+  embeddingIndex: index("embeddingIndex").using("hnsw", table.embedding.op("vector_cosine_ops")),
+}));
