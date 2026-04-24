@@ -3,14 +3,26 @@ import { streamText, embed } from "ai";
 import { db } from "@/db";
 import { chatbot, knowledgeChunk } from "@/db/schema";
 import { eq, sql, cosineDistance, desc } from "drizzle-orm";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
+// Konfigurasi Header CORS agar Widget bisa diakses dari domain manapun (seperti smartkos.com)
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+// Menangani permintaan Preflight dari Browser (CORS)
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
 
 export async function POST(req: NextRequest) {
   try {
     const { messages, chatbotId } = await req.json();
 
     if (!chatbotId) {
-      return new Response("Missing chatbotId", { status: 400 });
+      return new Response("Missing chatbotId", { status: 400, headers: corsHeaders });
     }
 
     // Ambil pesan terakhir dari pengunjung
@@ -20,7 +32,7 @@ export async function POST(req: NextRequest) {
     const botQuery = await db.select().from(chatbot).where(eq(chatbot.id, chatbotId)).limit(1);
     
     if (botQuery.length === 0) {
-      return new Response("Chatbot not found", { status: 404 });
+      return new Response("Chatbot not found", { status: 404, headers: corsHeaders });
     }
     const botData = botQuery[0];
 
@@ -62,11 +74,15 @@ Jika jawaban tidak ada di dalam informasi di atas, katakan 'Maaf, saya tidak mem
       messages,
     });
 
-    // 6. Kembalikan Stream secara real-time ke widget klien
-    return result.toTextStreamResponse();
+    // 6. Kembalikan Stream secara real-time ke widget klien + Headers CORS
+    const streamResponse = result.toTextStreamResponse();
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      streamResponse.headers.set(key, value);
+    });
+    return streamResponse;
 
   } catch (error) {
     console.error("Chat API Error:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    return new Response("Internal Server Error", { status: 500, headers: corsHeaders });
   }
 }
