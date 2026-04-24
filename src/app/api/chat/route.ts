@@ -58,7 +58,6 @@ Jika jawaban tidak ada di dalam informasi di atas, katakan 'Maaf, saya tidak mem
     const result = await streamText({
       model: openai("gpt-5.4-mini"), // Sesuai instruksi untuk menggunakan model ini
       temperature: 0.2, // AI yang faktual dan tidak berhalusinasi
-      maxTokens: 300, // Batasan output agar ringkas dan hemat biaya
       system: systemPrompt,
       messages,
     });
