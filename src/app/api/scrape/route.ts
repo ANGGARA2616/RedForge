@@ -5,7 +5,7 @@ import { embedMany } from "ai";
 import { db } from "@/db";
 import { knowledgeChunk, scrapedPage } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { v4 as uuidv4 } from "uuid"; // We will use crypto.randomUUID() natively
+// We will use crypto.randomUUID() natively
 
 // Fungsi sederhana untuk memecah teks panjang menjadi potongan-potongan kecil (chunking)
 function chunkText(text: string, chunkSize: number = 1000): string[] {
