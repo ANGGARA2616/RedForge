@@ -144,7 +144,7 @@
   // Inject HTML
   const container = document.createElement('div');
   container.id = 'redforge-widget-container';
-  container.innerHTML = \`
+  container.innerHTML = `
     <div id="redforge-chat-window">
       <div id="redforge-header">
         <span>Asisten Virtual</span>
@@ -163,7 +163,7 @@
     <div id="redforge-bubble">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
     </div>
-  \`;
+  `;
   document.body.appendChild(container);
 
   // 3. Logic Interaksi
@@ -188,7 +188,7 @@
 
   function appendMessage(role, text) {
     const msgDiv = document.createElement('div');
-    msgDiv.className = \`rf-msg rf-msg-\${role === 'user' ? 'user' : 'ai'}\`;
+    msgDiv.className = `rf-msg rf-msg-${role === 'user' ? 'user' : 'ai'}`;
     msgDiv.textContent = text;
     messagesDiv.appendChild(msgDiv);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
@@ -210,7 +210,7 @@
     const aiMsgDiv = appendMessage('ai', 'Mengetik...');
 
     try {
-      const response = await fetch(\`\${baseUrl}/api/chat\`, {
+      const response = await fetch(`${baseUrl}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
