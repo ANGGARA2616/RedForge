@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import Navbar from "@/components/Navbar";
 import ScrollReveal from "@/components/ScrollReveal";
 
@@ -334,6 +335,11 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      <Script 
+        src="https://red-forge.vercel.app/widget.js" 
+        data-bot-id="7b3cc168-d26b-48b0-b901-5008cf049e9e" 
+        strategy="lazyOnload"
+      />
     </>
   );
 }
