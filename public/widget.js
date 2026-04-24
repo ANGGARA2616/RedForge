@@ -232,17 +232,9 @@
         if (done) break;
         
         const chunk = decoder.decode(value);
-        // Vercel AI SDK stream format: 0:"teks"
-        // Kita parse secara sederhana:
-        const lines = chunk.split('\\n');
-        for (const line of lines) {
-          if (line.startsWith('0:')) {
-            const content = JSON.parse(line.substring(2));
-            aiText += content;
-            aiMsgDiv.textContent = aiText;
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-          }
-        }
+        aiText += chunk;
+        aiMsgDiv.textContent = aiText;
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
       }
       
       chatHistory.push({ role: 'assistant', content: aiText });

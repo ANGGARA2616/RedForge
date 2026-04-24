@@ -63,7 +63,7 @@ Jika jawaban tidak ada di dalam informasi di atas, katakan 'Maaf, saya tidak mem
     });
 
     // 6. Kembalikan Stream secara real-time ke widget klien
-    return result.toDataStreamResponse();
+    return result.toTextStreamResponse();
 
   } catch (error) {
     console.error("Chat API Error:", error);
