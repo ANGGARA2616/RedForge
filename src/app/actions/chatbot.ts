@@ -6,7 +6,6 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
-import { v4 as uuidv4 } from "uuid"; // We need uuid for generating random IDs. Actually wait, text("id").primaryKey() needs a value.
 // BetterAuth uses standard string IDs, we can use crypto.randomUUID() natively.
 
 export async function createChatbot(formData: FormData) {
