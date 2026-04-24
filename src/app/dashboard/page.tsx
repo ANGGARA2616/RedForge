@@ -1,16 +1,31 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { getUserChatbots } from "@/app/actions/chatbot";
+import { Bot, MessageSquare, TrendingUp, Plus, ExternalLink, Settings } from "lucide-react";
 
 export default function DashboardPage() {
   const { data: session, isPending } = useSession();
   const router = useRouter();
+  
+  const [chatbots, setChatbots] = useState<any[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
 
-  if (isPending) {
+  useEffect(() => {
+    if (session) {
+      getUserChatbots().then((res) => {
+        if (res.success) setChatbots(res.chatbots);
+        setLoadingData(false);
+      });
+    }
+  }, [session]);
+
+  if (isPending || loadingData) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--surface-dark)", color: "var(--text-primary)" }}>
-        <p>Loading...</p>
+        <p>Loading Dashboard...</p>
       </div>
     );
   }
@@ -19,6 +34,8 @@ export default function DashboardPage() {
     router.push("/login");
     return null;
   }
+
+  const totalMessages = chatbots.reduce((acc, bot) => acc + (bot.totalMessages || 0), 0);
 
   return (
     <>
@@ -42,31 +59,99 @@ export default function DashboardPage() {
           </div>
         </div>
       </nav>
-      <div style={{ paddingTop: 120, position: "relative", zIndex: 1 }}>
+      
+      <div style={{ paddingTop: 120, position: "relative", zIndex: 1, paddingBottom: 80 }}>
         <div className="container">
-          <h1 className="section-title" style={{ marginBottom: 8 }}>
-            Dashboard <span className="gradient-text">RedForge</span>
-          </h1>
-          <p className="section-desc" style={{ marginBottom: 48 }}>
-            Kelola chatbot AI Anda dari satu tempat.
-          </p>
-          <div className="features__grid" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
-            {[
-              { icon: "🤖", title: "Chatbot Aktif", value: "0", desc: "Belum ada chatbot" },
-              { icon: "💬", title: "Total Pesan", value: "0", desc: "Bulan ini" },
-              { icon: "📈", title: "Konversi", value: "0%", desc: "Rate konversi" },
-            ].map((card, i) => (
-              <div key={i} className="feature-card">
-                <div className="feature-card__icon feature-card__icon--purple">{card.icon}</div>
-                <div style={{ fontSize: "2rem", fontWeight: 800 }}>{card.value}</div>
-                <h3 className="feature-card__title">{card.title}</h3>
-                <p className="feature-card__desc">{card.desc}</p>
-              </div>
-            ))}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40 }}>
+            <div>
+              <h1 className="section-title" style={{ marginBottom: 8 }}>
+                Dashboard <span className="gradient-text">RedForge</span>
+              </h1>
+              <p className="section-desc">
+                Kelola chatbot AI Anda dari satu tempat.
+              </p>
+            </div>
+            <Link href="/dashboard/create" className="btn btn--primary">
+              <Plus size={18} /> Buat Chatbot Baru
+            </Link>
           </div>
-          <div style={{ marginTop: 48, textAlign: "center" }}>
-            <button className="btn btn--primary btn--large">+ Buat Chatbot Baru</button>
+
+          {/* Overview Stats */}
+          <div className="features__grid" style={{ gridTemplateColumns: "repeat(3, 1fr)", marginBottom: 48 }}>
+            <div className="feature-card">
+              <div className="feature-card__icon feature-card__icon--purple"><Bot /></div>
+              <div style={{ fontSize: "2rem", fontWeight: 800 }}>{chatbots.length}</div>
+              <h3 className="feature-card__title">Chatbot Aktif</h3>
+              <p className="feature-card__desc">Total chatbot Anda</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-card__icon feature-card__icon--cyan"><MessageSquare /></div>
+              <div style={{ fontSize: "2rem", fontWeight: 800 }}>{totalMessages}</div>
+              <h3 className="feature-card__title">Total Pesan</h3>
+              <p className="feature-card__desc">Sepanjang waktu</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-card__icon feature-card__icon--blue"><TrendingUp /></div>
+              <div style={{ fontSize: "2rem", fontWeight: 800 }}>0%</div>
+              <h3 className="feature-card__title">Konversi</h3>
+              <p className="feature-card__desc">Rata-rata konversi</p>
+            </div>
           </div>
+
+          {/* Chatbot List */}
+          <h2 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: 24 }}>Daftar Chatbot Anda</h2>
+          
+          {chatbots.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "60px 20px", background: "var(--surface)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--border)" }}>
+              <Bot size={48} color="var(--text-muted)" style={{ margin: "0 auto 16px" }} />
+              <h3 style={{ fontSize: "1.2rem", marginBottom: 8 }}>Belum ada chatbot</h3>
+              <p style={{ color: "var(--text-secondary)", marginBottom: 24 }}>Mulai otomatisasi layanan pelanggan website Anda sekarang.</p>
+              <Link href="/dashboard/create" className="btn btn--primary">
+                + Buat Chatbot Pertama Anda
+              </Link>
+            </div>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 24 }}>
+              {chatbots.map(bot => (
+                <div key={bot.id} className="feature-card" style={{ padding: 24 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <div style={{ width: 40, height: 40, borderRadius: 8, background: bot.brandColor, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: "bold", fontSize: "1.2rem" }}>
+                        {bot.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <h3 style={{ fontWeight: 600, fontSize: "1.1rem" }}>{bot.name}</h3>
+                        <a href={bot.websiteUrl} target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem", color: "var(--accent)", display: "flex", alignItems: "center", gap: 4 }}>
+                          {bot.websiteUrl.replace(/^https?:\/\//, '')} <ExternalLink size={12} />
+                        </a>
+                      </div>
+                    </div>
+                    <div style={{ width: 12, height: 12, borderRadius: "50%", background: bot.isActive ? "#10B981" : "#F59E0B" }} title={bot.isActive ? "Aktif" : "Tidak Aktif"} />
+                  </div>
+                  
+                  <div style={{ display: "flex", gap: 16, borderTop: "1px solid var(--border)", paddingTop: 16, marginTop: 16 }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: 1 }}>Pesan</div>
+                      <div style={{ fontWeight: 600 }}>{bot.totalMessages || 0}</div>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: 1 }}>Persona</div>
+                      <div style={{ fontWeight: 600, textTransform: "capitalize" }}>{bot.aiPersona}</div>
+                    </div>
+                  </div>
+                  
+                  <div style={{ display: "flex", gap: 12, marginTop: 24 }}>
+                    <button className="btn btn--outline" style={{ flex: 1, padding: "8px 0", fontSize: "0.85rem" }}>
+                      <Settings size={14} /> Pengaturan
+                    </button>
+                    <button className="btn btn--primary" style={{ flex: 1, padding: "8px 0", fontSize: "0.85rem" }}>
+                      Widget Code
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </>
