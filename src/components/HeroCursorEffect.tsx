@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 
 export default function HeroCursorEffect() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -29,121 +28,279 @@ export default function HeroCursorEffect() {
   }, []);
 
   return (
-    <section 
-      ref={heroRef} 
-      className="relative flex flex-col items-center justify-center min-h-[90vh] overflow-hidden bg-black text-white px-4 sm:px-6 lg:px-8 pt-20 pb-16"
-      style={{
-        background: '#050505',
-        backgroundImage: 'radial-gradient(circle at 50% 0%, #1a0b2e 0%, transparent 50%), radial-gradient(circle at 50% 100%, #081121 0%, transparent 50%)',
-        position: 'relative'
-      }}
-    >
-      {/* Background Grid Pattern */}
-      <div 
-        className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
-          backgroundSize: '40px 40px'
-        }}
-      />
+    <>
+      <style>{`
+        .ag-hero {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 90vh;
+          overflow: hidden;
+          background-color: #050505;
+          color: white;
+          padding: 120px 24px 80px;
+          background-image: radial-gradient(circle at 50% 0%, #1a0b2e 0%, transparent 50%), radial-gradient(circle at 50% 100%, #081121 0%, transparent 50%);
+        }
+        .ag-grid {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.04;
+          pointer-events: none;
+          background-image: linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px);
+          background-size: 40px 40px;
+        }
+        .ag-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 8px 16px;
+          border-radius: 9999px;
+          border: 1px solid rgba(139, 92, 246, 0.3);
+          background-color: rgba(139, 92, 246, 0.1);
+          backdrop-filter: blur(12px);
+          margin-bottom: 32px;
+          box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+          position: relative;
+          z-index: 10;
+        }
+        .ag-badge-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: #c084fc;
+          animation: ag-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes ag-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+        .ag-badge-text {
+          font-size: 0.85rem;
+          font-weight: 500;
+          color: #e9d5ff;
+          letter-spacing: 0.025em;
+        }
+        .ag-title {
+          font-size: clamp(2.5rem, 6vw, 5.5rem);
+          font-weight: 800;
+          letter-spacing: -0.025em;
+          line-height: 1.1;
+          margin-bottom: 32px;
+          text-align: center;
+          position: relative;
+          z-index: 10;
+        }
+        .ag-gradient-text {
+          background-image: linear-gradient(to right, #c084fc, #818cf8, #22d3ee);
+          -webkit-background-clip: text;
+          color: transparent;
+        }
+        .ag-desc {
+          font-size: clamp(1rem, 2vw, 1.25rem);
+          color: #9ca3af;
+          max-width: 650px;
+          margin-bottom: 40px;
+          line-height: 1.6;
+          font-weight: 300;
+          text-align: center;
+          position: relative;
+          z-index: 10;
+        }
+        .ag-desc-highlight {
+          color: #d8b4fe;
+          font-weight: 500;
+        }
+        .ag-actions {
+          display: flex;
+          gap: 16px;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          position: relative;
+          z-index: 10;
+          flex-wrap: wrap;
+        }
+        .ag-btn-primary {
+          padding: 16px 32px;
+          border-radius: 12px;
+          background-color: white;
+          color: black !important;
+          font-weight: 600;
+          transition: all 0.2s;
+          box-shadow: 0 0 0 rgba(255,255,255,0);
+          text-decoration: none;
+        }
+        .ag-btn-primary:hover {
+          transform: scale(1.05);
+          box-shadow: 0 0 30px rgba(255,255,255,0.3);
+        }
+        .ag-btn-outline {
+          padding: 16px 32px;
+          border-radius: 12px;
+          background-color: transparent;
+          color: white !important;
+          font-weight: 500;
+          border: 1px solid #374151;
+          transition: all 0.2s;
+          text-decoration: none;
+        }
+        .ag-btn-outline:hover {
+          border-color: #6b7280;
+          background-color: rgba(255,255,255,0.05);
+        }
+        .ag-terminal {
+          width: 100%;
+          max-width: 800px;
+          margin-top: 80px;
+          position: relative;
+          z-index: 10;
+        }
+        .ag-terminal-glow {
+          position: absolute;
+          inset: -2px;
+          background: linear-gradient(to right, #8b5cf6, #06b6d4);
+          border-radius: 20px;
+          filter: blur(20px);
+          opacity: 0.25;
+          animation: ag-pulse 4s infinite alternate;
+        }
+        .ag-terminal-window {
+          position: relative;
+          background-color: rgba(10, 10, 10, 0.85);
+          backdrop-filter: blur(24px);
+          border: 1px solid #1f2937;
+          border-radius: 16px;
+          padding: 20px;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .ag-terminal-header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding-bottom: 16px;
+          border-bottom: 1px solid #1f2937;
+          margin-bottom: 20px;
+        }
+        .ag-terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .ag-terminal-dot.red { background-color: #ef4444; }
+        .ag-terminal-dot.yellow { background-color: #eab308; }
+        .ag-terminal-dot.green { background-color: #22c55e; }
+        .ag-terminal-title {
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+          font-size: 0.8rem;
+          color: #6b7280;
+          margin-left: 16px;
+        }
+        .ag-terminal-body {
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+          font-size: 0.9rem;
+          color: #d1d5db;
+          text-align: left;
+          line-height: 1.6;
+        }
+        .ag-term-line { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+        .ag-term-block { padding-left: 24px; color: #6b7280; margin-bottom: 20px; }
+        .ag-term-success { color: #4ade80; }
+        .ag-chat-demo {
+          margin-left: 24px;
+          padding: 20px;
+          background-color: rgba(255,255,255,0.02);
+          border-left: 2px solid rgba(139, 92, 246, 0.4);
+          border-radius: 0 8px 8px 0;
+          margin-top: 20px;
+        }
+      `}</style>
 
-      {/* Antigravity Cursor Glow */}
-      <div 
-        className="pointer-events-none absolute z-0 transition-opacity duration-300 ease-out"
-        style={{
-          top: 0, left: 0, right: 0, bottom: 0,
-          opacity: isHovering ? 1 : 0,
-          background: `radial-gradient(800px circle at ${position.x}px ${position.y}px, rgba(139, 92, 246, 0.15), transparent 60%)`
-        }}
-      />
-      
-      {/* Dynamic Cursor Flare (Sharper Inner Glow) */}
-      <div 
-        className="pointer-events-none absolute z-0 transition-opacity duration-150 ease-out"
-        style={{
-          top: position.y - 150, left: position.x - 150,
-          width: 300, height: 300,
-          opacity: isHovering ? 1 : 0,
-          background: `radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, transparent 60%)`,
-          filter: 'blur(40px)',
-          transform: 'translateZ(0)'
-        }}
-      />
-
-      {/* Hero Content - Centered (Antigravity Style) */}
-      <div className="relative z-10 max-w-5xl mx-auto text-center flex flex-col items-center mt-12">
+      <section ref={heroRef} className="ag-hero" id="hero">
+        <div className="ag-grid" />
+        
+        {/* Antigravity Cursor Glow */}
         <div 
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 backdrop-blur-md mb-8"
-          style={{ boxShadow: '0 0 20px rgba(139, 92, 246, 0.2)' }}
-        >
-          <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-          <span className="text-xs sm:text-sm font-medium text-purple-200 tracking-wide">RedForge OS — AI Agent Platform</span>
+          style={{
+            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+            pointerEvents: 'none', zIndex: 0, transition: 'opacity 0.3s ease',
+            opacity: isHovering ? 1 : 0,
+            background: `radial-gradient(800px circle at ${position.x}px ${position.y}px, rgba(139, 92, 246, 0.15), transparent 60%)`
+          }}
+        />
+        
+        {/* Dynamic Cursor Flare (Sharper Inner Glow) */}
+        <div 
+          style={{
+            position: 'absolute', pointerEvents: 'none', zIndex: 0,
+            transition: 'opacity 0.15s ease',
+            top: position.y - 150, left: position.x - 150,
+            width: 300, height: 300,
+            opacity: isHovering ? 1 : 0,
+            background: `radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, transparent 60%)`,
+            filter: 'blur(40px)', transform: 'translateZ(0)'
+          }}
+        />
+
+        <div className="ag-badge">
+          <span className="ag-badge-dot" />
+          <span className="ag-badge-text">RedForge OS — AI Agent Platform</span>
         </div>
 
-        <h1 className="text-5xl sm:text-7xl lg:text-[5.5rem] font-extrabold tracking-tight leading-[1.1] mb-8">
-          Bangun <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-400 to-cyan-400">Otak Digital</span>
-          <br className="hidden sm:block" /> Untuk Bisnis Anda.
+        <h1 className="ag-title">
+          Bangun <span className="ag-gradient-text">Otak Digital</span>
+          <br /> Untuk Bisnis Anda.
         </h1>
         
-        <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mb-10 leading-relaxed font-light">
+        <p className="ag-desc">
           Platform AI Agentic yang secara otomatis menelan data website Anda, 
-          memproses <span className="text-purple-300">RAG (Retrieval-Augmented Generation)</span>, 
+          memproses <span className="ag-desc-highlight">RAG (Retrieval-Augmented Generation)</span>, 
           dan merespons pelanggan layaknya manusia super.
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-4 items-center w-full justify-center">
-          <Link 
-            href="/register" 
-            className="px-8 py-4 rounded-xl bg-white text-black font-semibold hover:bg-gray-100 transition-all transform hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] w-full sm:w-auto text-center"
-          >
+        <div className="ag-actions">
+          <Link href="/register" className="ag-btn-primary">
             Deploy AI Agent Sekarang
           </Link>
-          <Link 
-            href="#demo" 
-            className="px-8 py-4 rounded-xl bg-transparent text-white font-medium border border-gray-700 hover:border-gray-500 hover:bg-gray-800 transition-all w-full sm:w-auto text-center"
-          >
+          <Link href="#demo" className="ag-btn-outline">
             Lihat Arsitektur
           </Link>
         </div>
 
         {/* Floating Glassmorphic Terminal/Chat UI */}
-        <div className="w-full max-w-4xl mt-20 relative">
-          <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-2xl blur opacity-20 animate-pulse" />
-          <div className="relative rounded-2xl bg-[#0a0a0a]/80 backdrop-blur-xl border border-gray-800 p-2 sm:p-4 overflow-hidden shadow-2xl">
-            {/* Window Header */}
-            <div className="flex items-center gap-2 px-3 pb-3 border-b border-gray-800 mb-4">
-              <div className="w-3 h-3 rounded-full bg-red-500/80" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-              <div className="w-3 h-3 rounded-full bg-green-500/80" />
-              <div className="text-xs text-gray-500 ml-4 font-mono">redforge-agent ~ terminal</div>
+        <div className="ag-terminal">
+          <div className="ag-terminal-glow" />
+          <div className="ag-terminal-window">
+            <div className="ag-terminal-header">
+              <div className="ag-terminal-dot red" />
+              <div className="ag-terminal-dot yellow" />
+              <div className="ag-terminal-dot green" />
+              <div className="ag-terminal-title">redforge-agent ~ terminal</div>
             </div>
             
-            {/* Terminal Content */}
-            <div className="text-left font-mono text-sm sm:text-base p-2 sm:p-4 text-gray-300 space-y-4">
-              <div className="flex items-start gap-3">
-                <span className="text-cyan-400">➜</span>
-                <span className="text-purple-400">~</span>
-                <span className="text-white">redforge init --url https://smartkos.com</span>
+            <div className="ag-terminal-body">
+              <div className="ag-term-line">
+                <span style={{color: '#22d3ee'}}>➜</span>
+                <span style={{color: '#c084fc'}}>~</span>
+                <span style={{color: 'white'}}>redforge init --url https://smartkos.com</span>
               </div>
-              <div className="pl-6 text-gray-500">
-                [1/3] Scraping knowledge base... <span className="text-green-400">DONE</span><br/>
-                [2/3] Generating vector embeddings (1536 dim)... <span className="text-green-400">DONE</span><br/>
-                [3/3] Deploying agentic RAG endpoints... <span className="text-green-400">DONE</span>
+              <div className="ag-term-block">
+                [1/3] Scraping knowledge base... <span className="ag-term-success">DONE</span><br/>
+                [2/3] Generating vector embeddings (1536 dim)... <span className="ag-term-success">DONE</span><br/>
+                [3/3] Deploying agentic RAG endpoints... <span className="ag-term-success">DONE</span>
               </div>
-              <div className="flex items-start gap-3 mt-4">
-                <span className="text-green-400">✔</span>
-                <span className="text-white font-semibold">Agent deployed successfully in 4.2s.</span>
+              <div className="ag-term-line">
+                <span className="ag-term-success">✔</span>
+                <span style={{color: 'white', fontWeight: 600}}>Agent deployed successfully in 4.2s.</span>
               </div>
-              <div className="pl-6 text-gray-400 border-l-2 border-purple-500/30 ml-1 mt-2 p-3 bg-white/[0.02] rounded-r">
-                <div className="text-indigo-300 font-bold mb-1">User:</div>
-                "Berapa harga kost termurah?"
-                <div className="text-purple-400 font-bold mt-3 mb-1">RedForge AI:</div>
-                <span className="text-gray-200">"Harga kost termurah adalah Rp 450.000/bulan (Kamar Tipe A). Apakah Anda ingin saya kirimkan link pemesanannya?"</span>
+              <div className="ag-chat-demo">
+                <div style={{color: '#a5b4fc', fontWeight: 700, marginBottom: '6px'}}>User:</div>
+                <div style={{marginBottom: '20px'}}>"Berapa harga kost termurah?"</div>
+                <div style={{color: '#c084fc', fontWeight: 700, marginBottom: '6px'}}>RedForge AI:</div>
+                <div style={{color: '#e5e7eb'}}>"Harga kost termurah adalah Rp 450.000/bulan (Kamar Tipe A). Apakah Anda ingin saya kirimkan link pemesanannya?"</div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
