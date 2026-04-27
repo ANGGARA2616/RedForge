@@ -155,7 +155,7 @@ export default function DashboardPage() {
                     </Link>
                     <button 
                       className="btn btn--outline" 
-                      style={{ flex: 1, padding: "8px 0", fontSize: "0.85rem" }}
+                      style={{ flex: 1, padding: "8px 0", fontSize: "0.85rem", justifyContent: "center", textAlign: "center" }}
                       onClick={async () => {
                         const btn = document.getElementById(`scrape-btn-${bot.id}`);
                         if (btn) btn.innerText = "Membaca...";
@@ -178,7 +178,7 @@ export default function DashboardPage() {
                     </button>
                     <button 
                       className="btn btn--primary" 
-                      style={{ flex: 1, padding: "8px 0", fontSize: "0.85rem" }}
+                      style={{ flex: 1, padding: "8px 0", fontSize: "0.85rem", justifyContent: "center", textAlign: "center" }}
                       onClick={() => {
                         const snippet = `<script src="${window.location.origin}/widget.js" data-bot-id="${bot.id}"></script>`;
                         navigator.clipboard.writeText(snippet);
