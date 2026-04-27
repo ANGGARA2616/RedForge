@@ -72,6 +72,8 @@ export const chatbot = pgTable("chatbot", {
   aiPersona: text("ai_persona").default("friendly"),
   aiLanguageStyle: text("ai_language_style").default("professional"),
   widgetPosition: text("widget_position").default("bottom-right"),
+  customApiUrl: text("custom_api_url"),       // Opsional: URL API customer untuk data real-time
+  customApiKey: text("custom_api_key"),       // Opsional: API Key untuk autentikasi
   isActive: boolean("is_active").default(true),
   totalMessages: integer("total_messages").default(0),
   totalConversions: integer("total_conversions").default(0),

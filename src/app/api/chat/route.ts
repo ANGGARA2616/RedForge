@@ -57,15 +57,61 @@ export async function POST(req: NextRequest) {
     // Gabungkan konteks dari database
     const contextData = similarChunks.map(chunk => chunk.content).join("\n\n");
 
-    // 4. Susun System Prompt persis seperti permintaan
+    // 4. Ambil data real-time dari Custom API customer (jika tersedia)
+    let liveData = "";
+    if (botData.customApiUrl) {
+      try {
+        const apiUrl = new URL(botData.customApiUrl);
+        apiUrl.searchParams.set("query", latestMessage);
+
+        const apiHeaders: Record<string, string> = {
+          "Accept": "application/json",
+        };
+        if (botData.customApiKey) {
+          apiHeaders["x-api-key"] = botData.customApiKey;
+        }
+
+        const apiRes = await fetch(apiUrl.toString(), {
+          method: "GET",
+          headers: apiHeaders,
+          signal: AbortSignal.timeout(5000), // Timeout 5 detik agar tidak menghambat
+        });
+
+        if (apiRes.ok) {
+          const apiJson = await apiRes.json();
+          // Mendukung berbagai format response: { results: "..." } atau { data: [...] } atau string langsung
+          if (typeof apiJson.results === "string") {
+            liveData = apiJson.results;
+          } else if (typeof apiJson.data === "string") {
+            liveData = apiJson.data;
+          } else if (Array.isArray(apiJson.results)) {
+            liveData = apiJson.results.map((item: any) => JSON.stringify(item)).join("\n");
+          } else if (Array.isArray(apiJson.data)) {
+            liveData = apiJson.data.map((item: any) => JSON.stringify(item)).join("\n");
+          } else {
+            liveData = JSON.stringify(apiJson);
+          }
+        }
+      } catch (apiError) {
+        console.warn("Custom API fetch failed (non-blocking):", apiError);
+        // Tidak menghentikan proses — chatbot tetap menjawab dari knowledge base
+      }
+    }
+
+    // 5. Susun System Prompt
     const systemPrompt = `Kamu adalah asisten customer service bernama ${botData.name}.
 Gunakan gaya bahasa: ${botData.aiLanguageStyle} dan ${botData.aiPersona}.
 
 PENTING: Jangan pernah menggunakan format Markdown (seperti **tebal**, *miring*, - bullet list, dsb). Balas dengan teks biasa (plain text) saja yang rapi dengan pemisah paragraf/baris baru jika diperlukan. Jangan pernah menampilkan simbol * (asterisk).
 
-Jawab pertanyaan pelanggan HANYA berdasarkan informasi berikut ini:
+Jawab pertanyaan pelanggan berdasarkan informasi berikut ini:
+
+--- KNOWLEDGE BASE ---
 ${contextData || "(Belum ada data knowledge base)"}
 
+${liveData ? `--- DATA REAL-TIME DARI WEBSITE ---\n${liveData}` : ""}
+
+Jika ada data real-time, prioritaskan data tersebut untuk informasi seperti stok, harga terkini, dan ketersediaan.
 Jika jawaban tidak ada di dalam informasi di atas, katakan 'Maaf, saya tidak memiliki informasi tersebut, silakan hubungi admin manusia'.`;
 
     // 5. Kirim permintaan ke GPT-5.4-mini via Vercel AI SDK

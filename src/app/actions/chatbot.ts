@@ -23,6 +23,8 @@ export async function createChatbot(formData: FormData) {
     const brandColor = formData.get("brandColor") as string || "#7C3AED";
     const aiPersona = formData.get("aiPersona") as string || "friendly";
     const aiLanguageStyle = formData.get("aiLanguageStyle") as string || "professional";
+    const customApiUrl = (formData.get("customApiUrl") as string) || null;
+    const customApiKey = (formData.get("customApiKey") as string) || null;
     
     if (!name || !websiteUrl) {
       return { error: "Nama dan URL website wajib diisi" };
@@ -36,6 +38,8 @@ export async function createChatbot(formData: FormData) {
       brandColor,
       aiPersona,
       aiLanguageStyle,
+      customApiUrl,
+      customApiKey,
       createdAt: new Date(),
       updatedAt: new Date(),
     }).returning();
@@ -111,6 +115,8 @@ export async function updateChatbot(id: string, formData: FormData) {
     const brandColor = formData.get("brandColor") as string;
     const aiPersona = formData.get("aiPersona") as string;
     const aiLanguageStyle = formData.get("aiLanguageStyle") as string;
+    const customApiUrl = (formData.get("customApiUrl") as string) || null;
+    const customApiKey = (formData.get("customApiKey") as string) || null;
     
     if (!name || !websiteUrl) {
       return { error: "Nama dan URL website wajib diisi" };
@@ -129,6 +135,8 @@ export async function updateChatbot(id: string, formData: FormData) {
         brandColor,
         aiPersona,
         aiLanguageStyle,
+        customApiUrl,
+        customApiKey,
         updatedAt: new Date(),
       })
       .where(eq(chatbot.id, id))

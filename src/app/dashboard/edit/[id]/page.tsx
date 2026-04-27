@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { getChatbotById, updateChatbot } from "@/app/actions/chatbot";
-import { ArrowLeft, Bot, Palette, Type } from "lucide-react";
+import { ArrowLeft, Bot, Palette, Type, Database, ChevronDown, ChevronUp } from "lucide-react";
 
 export default function EditChatbotPage() {
   const router = useRouter();
@@ -14,6 +14,7 @@ export default function EditChatbotPage() {
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState("");
   const [chatbot, setChatbot] = useState<any>(null);
+  const [showGuide, setShowGuide] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -141,6 +142,130 @@ export default function EditChatbotPage() {
                     </select>
                   </div>
                 </div>
+              </div>
+
+              {/* Bagian 4: Custom API (Opsional) */}
+              <div className="feature-card" style={{ padding: 32 }}>
+                <h3 style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8, fontSize: "1.2rem", fontWeight: 700 }}>
+                  <Database size={24} color="#06B6D4" /> Integrasi Data Real-Time
+                </h3>
+                <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: 24, lineHeight: 1.6 }}>
+                  <strong>Opsional.</strong> Hubungkan chatbot ke API website Anda untuk mengakses data terbaru seperti stok produk, harga, atau ketersediaan kamar secara real-time.
+                </p>
+
+                <div className="form-group">
+                  <label className="form-label" htmlFor="customApiUrl">URL API Endpoint</label>
+                  <input id="customApiUrl" name="customApiUrl" type="url" className="form-input" defaultValue={chatbot.customApiUrl || ""} placeholder="https://website-anda.com/api/redforge/data" />
+                  <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: 6 }}>
+                    Chatbot akan memanggil URL ini dengan parameter <code style={{ background: "rgba(255,255,255,0.06)", padding: "2px 6px", borderRadius: 4, fontSize: "0.78rem" }}>?query=pertanyaan_pengunjung</code> untuk mendapatkan data terbaru.
+                  </p>
+                </div>
+
+                <div className="form-group" style={{ marginBottom: 16 }}>
+                  <label className="form-label" htmlFor="customApiKey">API Key (jika ada)</label>
+                  <input id="customApiKey" name="customApiKey" type="password" className="form-input" defaultValue={chatbot.customApiKey || ""} placeholder="Opsional — untuk keamanan API Anda" />
+                </div>
+
+                {/* Panduan */}
+                <button
+                  type="button"
+                  onClick={() => setShowGuide(!showGuide)}
+                  style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(6, 182, 212, 0.08)", border: "1px solid rgba(6, 182, 212, 0.2)", borderRadius: 8, padding: "10px 16px", color: "#06B6D4", fontSize: "0.85rem", fontWeight: 600, cursor: "pointer", width: "100%" }}
+                >
+                  {showGuide ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  Bagaimana cara membuat API Endpoint di website saya?
+                </button>
+
+                {showGuide && (
+                  <div style={{ marginTop: 16, padding: 20, background: "rgba(0,0,0,0.2)", borderRadius: 12, border: "1px solid var(--border)", fontSize: "0.84rem", lineHeight: 1.7, color: "var(--text-secondary)" }}>
+                    <p style={{ marginBottom: 12, fontWeight: 600, color: "var(--text-primary)" }}>
+                      Buat satu API endpoint di website Anda yang menerima parameter <code style={{ background: "rgba(255,255,255,0.06)", padding: "2px 6px", borderRadius: 4 }}>query</code> dan mengembalikan data dalam format JSON.
+                    </p>
+
+                    <p style={{ marginBottom: 8, fontWeight: 600, color: "#06B6D4" }}>Contoh Request dari RedForge:</p>
+                    <pre style={{ background: "rgba(0,0,0,0.3)", padding: 14, borderRadius: 8, overflow: "auto", marginBottom: 16, fontSize: "0.8rem", color: "#d1d5db" }}>
+{`GET https://website-anda.com/api/redforge/data?query=stok+kamar+tipe+a`}
+                    </pre>
+
+                    <p style={{ marginBottom: 8, fontWeight: 600, color: "#06B6D4" }}>Contoh Response yang diharapkan:</p>
+                    <pre style={{ background: "rgba(0,0,0,0.3)", padding: 14, borderRadius: 8, overflow: "auto", marginBottom: 20, fontSize: "0.8rem", color: "#d1d5db" }}>
+{`{
+  "results": "Kamar Tipe A: tersedia 3 unit. Harga Rp 500.000/bulan.
+Kamar Tipe B: tersedia 1 unit. Harga Rp 650.000/bulan."
+}`}
+                    </pre>
+
+                    <p style={{ marginBottom: 12, fontWeight: 600, color: "var(--text-primary)" }}>Contoh Kode per Platform:</p>
+
+                    {/* Next.js */}
+                    <p style={{ fontWeight: 600, color: "#4ade80", marginBottom: 4 }}>Next.js (App Router)</p>
+                    <pre style={{ background: "rgba(0,0,0,0.3)", padding: 14, borderRadius: 8, overflow: "auto", marginBottom: 16, fontSize: "0.78rem", color: "#d1d5db" }}>
+{`// app/api/redforge/data/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/db"; // koneksi database Anda
+
+export async function GET(req: NextRequest) {
+  const query = req.nextUrl.searchParams.get("query") || "";
+  const apiKey = req.headers.get("x-api-key");
+  
+  // Opsional: validasi API key
+  // if (apiKey !== process.env.REDFORGE_API_KEY) {
+  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // }
+
+  // Ambil data dari database Anda
+  const products = await db.query.product.findMany({
+    where: (p, { ilike }) => ilike(p.name, \`%\${query}%\`),
+    limit: 5,
+  });
+
+  const results = products
+    .map(p => \`\${p.name}: \${p.stock > 0 ? "tersedia " + p.stock + " unit" : "habis"}. Harga \${p.price}\`)
+    .join("\\n");
+
+  return NextResponse.json({ results });
+}`}
+                    </pre>
+
+                    {/* Express */}
+                    <p style={{ fontWeight: 600, color: "#60a5fa", marginBottom: 4 }}>Express.js</p>
+                    <pre style={{ background: "rgba(0,0,0,0.3)", padding: 14, borderRadius: 8, overflow: "auto", marginBottom: 16, fontSize: "0.78rem", color: "#d1d5db" }}>
+{`app.get("/api/redforge/data", async (req, res) => {
+  const query = req.query.query || "";
+  const products = await Product.find({
+    name: { $regex: query, $options: "i" }
+  }).limit(5);
+
+  const results = products
+    .map(p => p.name + ": stok " + p.stock + ". Harga " + p.price)
+    .join("\\n");
+
+  res.json({ results });
+});`}
+                    </pre>
+
+                    {/* Laravel */}
+                    <p style={{ fontWeight: 600, color: "#f472b6", marginBottom: 4 }}>Laravel (PHP)</p>
+                    <pre style={{ background: "rgba(0,0,0,0.3)", padding: 14, borderRadius: 8, overflow: "auto", marginBottom: 16, fontSize: "0.78rem", color: "#d1d5db" }}>
+{`// routes/api.php
+Route::get('/redforge/data', function (Request $request) {
+    $query = $request->query('query', '');
+    $products = Product::where('name', 'like', "%{$query}%")
+        ->take(5)->get();
+
+    $results = $products->map(fn($p) =>
+        "{$p->name}: stok {$p->stock}. Harga {$p->price}"
+    )->implode("\\n");
+
+    return response()->json(['results' => $results]);
+});`}
+                    </pre>
+
+                    <div style={{ padding: 12, background: "rgba(74,222,128,0.08)", border: "1px solid rgba(74,222,128,0.2)", borderRadius: 8, color: "#4ade80", fontSize: "0.82rem" }}>
+                      💡 <strong>Tips:</strong> Anda bebas menentukan format data yang dikembalikan. Yang penting, field <code style={{ background: "rgba(255,255,255,0.06)", padding: "1px 4px", borderRadius: 3 }}>results</code> berisi teks yang bisa dibaca oleh AI. Semakin jelas deskripsinya, semakin akurat jawaban chatbot.
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: 16, marginTop: 16 }}>

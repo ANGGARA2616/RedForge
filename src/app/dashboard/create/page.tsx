@@ -3,12 +3,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createChatbot } from "@/app/actions/chatbot";
-import { ArrowLeft, Bot, Palette, Type } from "lucide-react";
+import { ArrowLeft, Bot, Palette, Type, Database } from "lucide-react";
 
 export default function CreateChatbotPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showApi, setShowApi] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -114,6 +115,35 @@ export default function CreateChatbotPage() {
                   </select>
                 </div>
               </div>
+            </div>
+
+            {/* Bagian 4: Custom API (Opsional, Collapsible) */}
+            <div className="feature-card" style={{ padding: 32 }}>
+              <button
+                type="button"
+                onClick={() => setShowApi(!showApi)}
+                style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", color: "var(--text-primary)", fontSize: "1.2rem", fontWeight: 700, cursor: "pointer", padding: 0, width: "100%" }}
+              >
+                <Database size={24} color="#06B6D4" />
+                Integrasi Data Real-Time
+                <span style={{ marginLeft: "auto", fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 400, background: "rgba(6,182,212,0.1)", padding: "4px 10px", borderRadius: 20 }}>Opsional</span>
+              </button>
+
+              {showApi && (
+                <div style={{ marginTop: 20 }}>
+                  <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: 20, lineHeight: 1.6 }}>
+                    Hubungkan chatbot ke API website Anda agar bisa mengakses data terbaru seperti stok produk, harga, atau ketersediaan. Anda bisa mengatur ini nanti melalui menu Edit.
+                  </p>
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="customApiUrl">URL API Endpoint</label>
+                    <input id="customApiUrl" name="customApiUrl" type="url" className="form-input" placeholder="https://website-anda.com/api/redforge/data" />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label" htmlFor="customApiKey">API Key (jika ada)</label>
+                    <input id="customApiKey" name="customApiKey" type="password" className="form-input" placeholder="Opsional — untuk keamanan API Anda" />
+                  </div>
+                </div>
+              )}
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 16, marginTop: 16 }}>
