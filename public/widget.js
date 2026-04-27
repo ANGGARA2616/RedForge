@@ -74,7 +74,7 @@
 
       // === ROOT ===
       + '#rf-root{position:fixed!important;bottom:24px!important;right:24px!important;z-index:2147483647!important;font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;font-size:14px!important;line-height:1.5!important;box-sizing:border-box!important;direction:ltr!important;}'
-      + '#rf-root *{box-sizing:border-box!important;margin:0!important;padding:0!important;border:none!important;outline:none!important;}'
+      + '#rf-root *{box-sizing:border-box!important;margin:0!important;border:none!important;outline:none!important;}'
 
       // === BUBBLE ===
       + '#rf-bubble{width:62px!important;height:62px!important;border-radius:50%!important;background:linear-gradient(135deg,' + botColor + ',' + colorDark + ')!important;color:#fff!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;box-shadow:0 6px 24px ' + botColor + '44,0 2px 8px rgba(0,0,0,0.12)!important;transition:all 0.3s cubic-bezier(0.4,0,0.2,1)!important;animation:rf-glow 2.5s ease-in-out infinite!important;}'
