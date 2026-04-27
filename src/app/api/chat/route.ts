@@ -61,6 +61,8 @@ export async function POST(req: NextRequest) {
     const systemPrompt = `Kamu adalah asisten customer service bernama ${botData.name}.
 Gunakan gaya bahasa: ${botData.aiLanguageStyle} dan ${botData.aiPersona}.
 
+PENTING: Jangan pernah menggunakan format Markdown (seperti **tebal**, *miring*, - bullet list, dsb). Balas dengan teks biasa (plain text) saja yang rapi dengan pemisah paragraf/baris baru jika diperlukan. Jangan pernah menampilkan simbol * (asterisk).
+
 Jawab pertanyaan pelanggan HANYA berdasarkan informasi berikut ini:
 ${contextData || "(Belum ada data knowledge base)"}
 

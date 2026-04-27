@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { getUserChatbots } from "@/app/actions/chatbot";
-import { Bot, MessageSquare, TrendingUp, Plus, ExternalLink, Settings } from "lucide-react";
+import { getUserChatbots, deleteChatbot } from "@/app/actions/chatbot";
+import { Bot, MessageSquare, TrendingUp, Plus, ExternalLink, Settings, Trash2 } from "lucide-react";
 
 export default function DashboardPage() {
   const { data: session, isPending } = useSession();
@@ -22,6 +22,12 @@ export default function DashboardPage() {
     }
   }, [session]);
 
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.push("/login");
+    }
+  }, [isPending, session, router]);
+
   if (isPending || loadingData) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--surface-dark)", color: "var(--text-primary)" }}>
@@ -31,7 +37,6 @@ export default function DashboardPage() {
   }
 
   if (!session) {
-    router.push("/login");
     return null;
   }
 
@@ -141,6 +146,13 @@ export default function DashboardPage() {
                   </div>
                   
                   <div style={{ display: "flex", gap: 12, marginTop: 24, flexWrap: "wrap" }}>
+                    <Link
+                      href={`/dashboard/edit/${bot.id}`}
+                      className="btn btn--outline"
+                      style={{ flex: "1 1 100%", padding: "8px 0", fontSize: "0.85rem", justifyContent: "center" }}
+                    >
+                      <Settings size={14} style={{ display: 'inline', marginRight: 4 }} /> Edit Chatbot
+                    </Link>
                     <button 
                       className="btn btn--outline" 
                       style={{ flex: 1, padding: "8px 0", fontSize: "0.85rem" }}
@@ -162,7 +174,7 @@ export default function DashboardPage() {
                       }}
                       id={`scrape-btn-${bot.id}`}
                     >
-                      <Settings size={14} style={{ display: 'inline', marginRight: 4 }} /> Latih AI dari URL
+                      Latih AI dari URL
                     </button>
                     <button 
                       className="btn btn--primary" 
@@ -174,6 +186,22 @@ export default function DashboardPage() {
                       }}
                     >
                       Copy Widget Code
+                    </button>
+                    <button 
+                      className="btn btn--outline" 
+                      style={{ flex: "1 1 100%", padding: "8px 0", fontSize: "0.85rem", justifyContent: "center", color: "#F87171", borderColor: "#F87171" }}
+                      onClick={async () => {
+                        if (!confirm(`Yakin ingin menghapus chatbot "${bot.name}"? Semua data training dan riwayat percakapan akan ikut terhapus.`)) return;
+                        const res = await deleteChatbot(bot.id);
+                        if (res.success) {
+                          setChatbots(prev => prev.filter(b => b.id !== bot.id));
+                          alert("Chatbot berhasil dihapus.");
+                        } else {
+                          alert(res.error || "Gagal menghapus chatbot");
+                        }
+                      }}
+                    >
+                      <Trash2 size={14} style={{ display: 'inline', marginRight: 4 }} /> Hapus Chatbot
                     </button>
                   </div>
                 </div>

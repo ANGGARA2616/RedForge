@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import Link from "next/link";
 import Script from "next/script";
 import Navbar from "@/components/Navbar";
@@ -72,70 +72,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Showcase Sections */}
-      <section className="showcase">
-        <div className="container">
-          <ScrollReveal>
-            <div className="showcase__row">
-              <div className="showcase__visual">
-                <div className="showcase__image">
-                  <Image src="/images/smart-recommendation.png" alt="Smart Recommendation" width={560} height={380} />
-                </div>
-              </div>
-              <div className="showcase__content">
-                <div className="section-label">Smart Recommendation</div>
-                <h2 className="section-title">Rekomendasi Produk <span className="gradient-text">Cerdas & Personal</span></h2>
-                <p className="section-desc">AI kami menganalisis perilaku pengunjung dan menampilkan produk yang paling relevan secara otomatis.</p>
-                <ul className="showcase__list">
-                  <li className="showcase__list-item"><span className="showcase__list-check">✓</span>Analisis intent pengunjung secara real-time</li>
-                  <li className="showcase__list-item"><span className="showcase__list-check">✓</span>Rekomendasi berbasis data riwayat & preferensi</li>
-                  <li className="showcase__list-item"><span className="showcase__list-check">✓</span>Direct link ke halaman produk (RAG-powered)</li>
-                </ul>
-              </div>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal>
-            <div className="showcase__row showcase__row--reverse">
-              <div className="showcase__content">
-                <div className="section-label">Integrasi Mudah</div>
-                <h2 className="section-title">Pasang Widget <span className="gradient-text">Tanpa Coding</span></h2>
-                <p className="section-desc">Generate kode snippet dan tempel di website Anda. Tidak perlu keahlian teknis.</p>
-                <ul className="showcase__list">
-                  <li className="showcase__list-item"><span className="showcase__list-check">✓</span>Kode embed satu baris yang ringan</li>
-                  <li className="showcase__list-item"><span className="showcase__list-check">✓</span>Kompatibel dengan semua platform</li>
-                  <li className="showcase__list-item"><span className="showcase__list-check">✓</span>Loading cepat tanpa memperlambat website</li>
-                </ul>
-              </div>
-              <div className="showcase__visual">
-                <div className="showcase__image">
-                  <Image src="/images/widget-feature.png" alt="Widget Integration" width={560} height={380} />
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal>
-            <div className="showcase__row">
-              <div className="showcase__visual">
-                <div className="showcase__image">
-                  <Image src="/images/ai-training-feature.png" alt="AI Training" width={560} height={380} />
-                </div>
-              </div>
-              <div className="showcase__content">
-                <div className="section-label">Auto-Training AI</div>
-                <h2 className="section-title">AI yang <span className="gradient-text">Belajar Sendiri</span> dari Website Anda</h2>
-                <p className="section-desc">Cukup berikan URL, AI kami akan memetakan seluruh data website dan melatih diri secara otomatis.</p>
-                <ul className="showcase__list">
-                  <li className="showcase__list-item"><span className="showcase__list-check">✓</span>Auto-scraping halaman produk, FAQ, dan konten</li>
-                  <li className="showcase__list-item"><span className="showcase__list-check">✓</span>Pembaruan knowledge base otomatis</li>
-                  <li className="showcase__list-item"><span className="showcase__list-check">✓</span>Akurasi jawaban tinggi dengan teknologi RAG</li>
-                </ul>
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
 
       {/* Pricing */}
       <section className="pricing" id="pricing">
@@ -143,47 +79,71 @@ export default function Home() {
           <ScrollReveal>
             <div className="pricing__header">
               <div className="section-label">Harga</div>
-              <h2 className="section-title">Pilih Paket yang <span className="gradient-text">Sesuai Bisnis Anda</span></h2>
-              <p className="section-desc">Mulai gratis, upgrade kapan saja sesuai pertumbuhan bisnis Anda.</p>
+              <h2 className="section-title">Investasi Kecil, <span className="gradient-text">Dampak Besar</span></h2>
+              <p className="section-desc">Mulai gratis tanpa kartu kredit. Upgrade kapan saja.</p>
             </div>
           </ScrollReveal>
           <div className="pricing__grid">
-            <ScrollReveal><div className="pricing-card">
-              <div className="pricing-card__name">Starter</div>
-              <div className="pricing-card__price">Gratis</div>
-              <div className="pricing-card__desc">Cocok untuk mencoba dan bisnis kecil</div>
-              <div className="pricing-card__features">
-                {["1 Website","500 pesan/bulan","Widget embed dasar","Auto-scraping 10 halaman","Branding RedForge"].map((f,i)=>(
-                  <div key={i} className="pricing-card__feature"><span className="pricing-card__feature-icon">✓</span>{f}</div>
-                ))}
+            {/* Starter */}
+            <ScrollReveal>
+              <div className="pr-card">
+                <div className="pr-card__icon">🚀</div>
+                <div className="pr-card__name">Starter</div>
+                <div className="pr-card__price">Gratis</div>
+                <div className="pr-card__tagline">Untuk mencoba kekuatan AI chatbot</div>
+                <div className="pr-card__divider" />
+                <ul className="pr-card__features">
+                  <li><span className="pr-check">✓</span>1 chatbot / website</li>
+                  <li><span className="pr-check">✓</span>500 pesan / bulan</li>
+                  <li><span className="pr-check">✓</span>Auto-scraping 10 halaman</li>
+                  <li><span className="pr-check">✓</span>Widget embed dasar</li>
+                  <li className="pr-muted"><span className="pr-x">✕</span>Kustomisasi branding</li>
+                  <li className="pr-muted"><span className="pr-x">✕</span>Analytics dashboard</li>
+                </ul>
+                <Link href="/register" className="pr-card__btn pr-card__btn--outline">Mulai Gratis</Link>
               </div>
-              <Link href="/register" className="btn btn--outline">Mulai Gratis</Link>
-            </div></ScrollReveal>
+            </ScrollReveal>
 
-            <ScrollReveal><div className="pricing-card pricing-card--featured">
-              <div className="pricing-card__badge">POPULER</div>
-              <div className="pricing-card__name">Pro</div>
-              <div className="pricing-card__price">Rp299K <span>/bulan</span></div>
-              <div className="pricing-card__desc">Untuk bisnis yang serius meningkatkan konversi</div>
-              <div className="pricing-card__features">
-                {["5 Website","10.000 pesan/bulan","Kustomisasi penuh brand","Auto-scraping unlimited","Smart recommendation AI","Analytics dashboard"].map((f,i)=>(
-                  <div key={i} className="pricing-card__feature"><span className="pricing-card__feature-icon">✓</span>{f}</div>
-                ))}
+            {/* Pro */}
+            <ScrollReveal>
+              <div className="pr-card pr-card--featured">
+                <div className="pr-card__badge">PALING POPULER</div>
+                <div className="pr-card__icon">⚡</div>
+                <div className="pr-card__name">Pro</div>
+                <div className="pr-card__price">Rp299K<span>/bulan</span></div>
+                <div className="pr-card__tagline">Untuk bisnis yang serius meningkatkan konversi</div>
+                <div className="pr-card__divider" />
+                <ul className="pr-card__features">
+                  <li><span className="pr-check">✓</span>5 chatbot / website</li>
+                  <li><span className="pr-check">✓</span>10.000 pesan / bulan</li>
+                  <li><span className="pr-check">✓</span>Auto-scraping unlimited</li>
+                  <li><span className="pr-check">✓</span>Kustomisasi branding penuh</li>
+                  <li><span className="pr-check">✓</span>Smart recommendation AI</li>
+                  <li><span className="pr-check">✓</span>Analytics & insight dashboard</li>
+                </ul>
+                <Link href="/register" className="pr-card__btn pr-card__btn--primary">Pilih Paket Pro</Link>
               </div>
-              <Link href="/register" className="btn btn--primary">Pilih Paket Pro</Link>
-            </div></ScrollReveal>
+            </ScrollReveal>
 
-            <ScrollReveal><div className="pricing-card">
-              <div className="pricing-card__name">Enterprise</div>
-              <div className="pricing-card__price">Custom</div>
-              <div className="pricing-card__desc">Solusi lengkap untuk skala besar</div>
-              <div className="pricing-card__features">
-                {["Unlimited website","Unlimited pesan","Integrasi ERP/CRM","Dedicated support 24/7","Custom AI persona","SLA 99.9% uptime"].map((f,i)=>(
-                  <div key={i} className="pricing-card__feature"><span className="pricing-card__feature-icon">✓</span>{f}</div>
-                ))}
+            {/* Enterprise */}
+            <ScrollReveal>
+              <div className="pr-card">
+                <div className="pr-card__icon">🏢</div>
+                <div className="pr-card__name">Enterprise</div>
+                <div className="pr-card__price">Custom</div>
+                <div className="pr-card__tagline">Solusi skala besar dengan dukungan prioritas</div>
+                <div className="pr-card__divider" />
+                <ul className="pr-card__features">
+                  <li><span className="pr-check">✓</span>Unlimited chatbot & website</li>
+                  <li><span className="pr-check">✓</span>Unlimited pesan</li>
+                  <li><span className="pr-check">✓</span>Integrasi ERP / CRM</li>
+                  <li><span className="pr-check">✓</span>Custom AI persona & tone</li>
+                  <li><span className="pr-check">✓</span>Dedicated support 24/7</li>
+                  <li><span className="pr-check">✓</span>SLA 99.9% uptime</li>
+                </ul>
+                <Link href="#" className="pr-card__btn pr-card__btn--outline">Hubungi Sales</Link>
               </div>
-              <Link href="#" className="btn btn--outline">Hubungi Sales</Link>
-            </div></ScrollReveal>
+            </ScrollReveal>
           </div>
         </div>
       </section>

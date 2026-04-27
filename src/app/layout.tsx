@@ -14,7 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body>{children}</body>
+      <body>
+        {children}
+        <script src="http://localhost:3000/widget.js" data-bot-id="594b191a-1382-47c1-ab16-69ffeb266741" async></script>
+      </body>
     </html>
   );
 }
